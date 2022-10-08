@@ -27,7 +27,8 @@ stop_word = ['the', 'this', 'that', 'these', 'those', 'there', 'their', 'they', 
 # loop to add text files to a list
 def list_of_txt_file():
     txt_files = []
-    for file in glob.glob("./Cranfield/*.txt"):
+    filepath = glob.glob("./Cranfield/*.txt")
+    for file in filepath:
         txt_files.append(file)
     return txt_files
 
@@ -88,11 +89,13 @@ def plotting():
 
 def init(load):
     filelist = list_of_txt_file()
-    read_data = []
-
-    for i, f in enumerate(filelist):
-        file = open(f, "r")
-        read_data.append(file.read())
+    read_data = {}
+    
+    for file in filelist:
+        idx = "".join(c for c in file if c in "0123456789")
+        f = open(file, 'r')
+        read_data[int(idx)] = f.read()
+        f.close()
     
     ir = IRSystem(read_data, stop_word, load)
     return ir
@@ -113,8 +116,10 @@ def read_query():
     return data
 
 ir = init(True)
-query_process(ir)
+ir._print_inverted_index()
+
 query = read_query()
 
-print(query[2])
-print(len(ir.process_query(query[2])))
+result = ir.process_query(query[0])
+print(len(result))
+print(result)

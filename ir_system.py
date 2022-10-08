@@ -39,16 +39,16 @@ class IRSystem():
 
     def _preprocess_corpus(self, stop_words):
         index = {}
-        for i, doc in enumerate(self._docs):
+        for i, doc in self._docs.items():
             for word in doc.split():
                 word = removeSpecialCharacter(word)
                 if word in stop_words or len(word) == 1:
                     continue
                 token = self._stemmer.stem(word.lower())
                 if index.get(token, -244) == -244:
-                    index[token] = Node(i + 1)
+                    index[token] = Node(i)
                 elif isinstance(index[token], Node):
-                    index[token].insert(i + 1)
+                    index[token].insert(i)
                 else:
                     raise UserWarning('Wrong data type for posting list')
         return index
